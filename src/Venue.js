@@ -1,0 +1,24 @@
+import React, { Component } from 'react'
+
+class Venue extends Component {
+    constructor(props) {
+        super(props)
+    }
+    handleNameClick = (e)=>{
+        this.props.openModal()
+        
+    }
+    render() {
+        return (
+            <div className="card venue">
+                <div className="card-body">
+                    <h1 className="venue-name" data-toggle="modal" data-target="#venue-modal">{this.props.name}</h1>
+                    <p>{this.props.address}</p>
+                    <p>Auckland</p>
+                    <p><span className="badge venue-type">{this.props.category}</span></p>
+                </div>
+            </div>
+        )
+    }
+}
+export default Venue
