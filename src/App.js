@@ -1,4 +1,5 @@
 import React,{ Component } from 'react';
+import Modal from 'react-bootstrap/Modal'
 import Venue from './Venue';
 import './App.css';
 
@@ -13,7 +14,7 @@ class App extends Component {
     this.state = {
       venues:[],
       
-      isModalOpen:true,
+      isModalOpen:false,
       modalVenue:{
         address: "369 Queen Street",
         category: "Record Shop",
@@ -72,13 +73,12 @@ class App extends Component {
     .then(res=>res.json())
     .then(data=>{
         var item = data.response.venue
-
         var venue = {
           id:item.id,
           name:item.name,
           address:item.location.address,
           city:item.location.city,
-          category:item.categories[0].shortname,
+          category:item.categories[0].shortName,
           description:item.description,
           photo:item.bestPhoto.prefix + '500x300' + item.bestPhoto.suffix
         }
@@ -86,7 +86,10 @@ class App extends Component {
       
     })
     .then(data=>{
-      console.log(data)
+      this.setState({
+        modalVenue:data
+      })
+     
     })
   }
 
@@ -95,11 +98,15 @@ class App extends Component {
       isModalOpen:true
     })
   }
+  closeModal = ()=>{
+    this.setState({
+      isModalOpen:false
+    })
+  }
 
   componentDidMount = () => {
     this.loadVenues()
 
-    this.loadVenue('4b5a5f48f964a520ccc028e3')
   } 
 
   render(){
@@ -111,8 +118,9 @@ class App extends Component {
               this.state.venues.map((item)=>{
                 var venueProps = {
                   key: item.id,
-                  loadVenues: this.loadVenues,
                   ...item,
+                  openModal: this.openModal,
+                  loadVenue: this.loadVenue,
                 }
                 return (
                   <Venue {...venueProps}/>
@@ -139,30 +147,25 @@ class App extends Component {
               </div>
           </div>
         </div>
-     
-        <div className="modal" id="venue-modal" tabindex="-1" role="dialog">
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-      
-              <div className="modal-body">
+        <Modal show = {this.state.isModalOpen} onHide ={this.closeModal}>
 
-                <div className="venue-popup-body row">
-                  <div className="col-6">
-                    <h1 className="venue-name">The Store</h1>
-                    <p>5B Gore St</p>
-                    <p>Auckland</p>
-                    <p><span className="badge venue-type">Café</span></p>
-                  </div>
-                  <div className="col-6">
-                    <img src="https://fastly.4sqi.net/img/general/200x200/194220_nI7vTqtIFQncbe7Zgn_XLymzqM78Cx-aZ_gySunjz-M.jpg" className="img-fluid" alt=""/>
-                  </div>
-                </div>
+          <Modal.Body>
 
+            <div className="venue-popup-body row">
+              <div className="col-6">
+                <h1 className="venue-name">{this.state.modalVenue.name}</h1>
+                <p>{this.state.modalVenue.address}</p>
+                <p>Auckland</p>
+                <p><span className="badge venue-type">{this.state.modalVenue.category}</span></p>
               </div>
-
+              <div className="col-6">
+                <img src={this.state.modalVenue.photo} className="img-fluid" alt="" />
+              </div>
             </div>
-          </div>
-        </div>
+
+        </Modal.Body>
+        
+        </Modal>
       </div>
     )
   }

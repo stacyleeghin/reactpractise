@@ -6,13 +6,15 @@ class Venue extends Component {
     }
     handleNameClick = (e)=>{
         this.props.openModal()
+        var id = this.props.id
+        this.props.loadVenue(id)
         
     }
     render() {
         return (
             <div className="card venue">
                 <div className="card-body">
-                    <h1 className="venue-name" data-toggle="modal" data-target="#venue-modal">{this.props.name}</h1>
+                    <h1 className="venue-name" onClick={this.handleNameClick}>{this.props.name}</h1>
                     <p>{this.props.address}</p>
                     <p>Auckland</p>
                     <p><span className="badge venue-type">{this.props.category}</span></p>
